@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from config import Config
+from configs import Config
 from graph import Graph
 class rbm:
     def __init__(self, shape, para):

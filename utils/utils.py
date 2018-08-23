@@ -5,6 +5,7 @@ from sklearn.metrics import f1_score
 from sklearn.multiclass import OneVsRestClassifier
 import pdb
 
+
 class Dotdict(dict):
     """dot.notation access to dictionary attributes"""
     __getattr__ = dict.get
@@ -13,12 +14,13 @@ class Dotdict(dict):
 
 
 def getSimilarity(result):
-    print "getting similarity..."
+    print("getting similarity...")
     return np.dot(result, result.T)
-    
+
+
 def check_reconstruction(embedding, graph_data, check_index):
     def get_precisionK(embedding, data, max_index):
-        print "get precisionK..."
+        print("get precisionK...")
         similarity = getSimilarity(embedding).reshape(-1)
         sortedInd = np.argsort(similarity)
         cur = 0
@@ -39,13 +41,13 @@ def check_reconstruction(embedding, graph_data, check_index):
     precisionK = get_precisionK(embedding, graph_data, np.max(check_index))
     ret = []
     for index in check_index:
-        print "precisonK[%d] %.2f" % (index, precisionK[index - 1])
+        print("precisonK[%d] %.2f" % (index, precisionK[index - 1]))
         ret.append(precisionK[index - 1])
     return ret
 
 def check_link_prediction(embedding, train_graph_data, origin_graph_data, check_index):
     def get_precisionK(embedding, train_graph_data, origin_graph_data, max_index):
-        print "get precisionK..."
+        print("get precisionK...")
         similarity = getSimilarity(embedding).reshape(-1)
         sortedInd = np.argsort(similarity)
         cur = 0
@@ -56,19 +58,23 @@ def check_link_prediction(embedding, train_graph_data, origin_graph_data, check_
         for ind in sortedInd:
             x = ind / N
             y = ind % N
-            if (x == y or train_graph_data.adj_matrix[x].toarray()[0][y] == 1):
-                continue 
+            if x == y or train_graph_data.adj_matrix[x].toarray()[0][y] == 1:
+                continue
+
             count += 1
-            if (origin_graph_data.adj_matrix[x].toarray()[0][y] == 1):
+            if origin_graph_data.adj_matrix[x].toarray()[0][y] == 1:
                 cur += 1
+
             precisionK.append(1.0 * cur / count)
             if count > max_index:
                 break
+
         return precisionK
+
     precisionK = get_precisionK(embedding, train_graph_data, origin_graph_data, np.max(check_index))
     ret = []
     for index in check_index:
-        print "precisonK[%d] %.2f" % (index, precisionK[index - 1])
+        print("precisonK[%d] %.2f" % (index, precisionK[index - 1]))
         ret.append(precisionK[index - 1])
     return ret
  
@@ -95,6 +101,3 @@ def check_multi_label_classification(X, Y, test_ratio = 0.9):
     macro = f1_score(y_test, y_pred, average = "macro")
     return "micro_f1: %.4f macro_f1 : %.4f" % (micro, macro)
     #############################################
-
-
-    

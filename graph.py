@@ -6,6 +6,7 @@ import copy
 from scipy.sparse import csr_matrix
 from scipy.sparse import dok_matrix
 
+
 class Graph(object):
     def __init__(self, file_path, ng_sample_ratio):
         suffix = file_path.split('.')[-1]
@@ -38,10 +39,10 @@ class Graph(object):
         if (ng_sample_ratio > 0):
             self.__negativeSample(int(ng_sample_ratio*self.E))
         self.order = np.arange(self.N)
-        print "Vertexes : %d  Edges : %d ngSampleRatio: %f" % (self.N, self.E, ng_sample_ratio)
+        print("Vertexes : %d  Edges : %d ngSampleRatio: %f" % (self.N, self.E, ng_sample_ratio))
         
     def __negativeSample(self, ngSample):
-        print "negative Sampling"
+        print("negative Sampling")
         size = 0
         while (size < ngSample):
             xx = random.randint(0, self.N-1)
@@ -51,7 +52,7 @@ class Graph(object):
             self.adj_matrix[xx, yy] = -1
             self.adj_matrix[yy, xx] = -1
             size += 1
-        print "negative Sampling done"
+        print("negative Sampling done")
         
     def load_label_data(self, filename):
         with open(filename,"r") as fin:
@@ -65,7 +66,6 @@ class Graph(object):
                     for label in labels:
                         self.label[int(line[0])][int(label)] = True
 
-    
     def sample(self, batch_size, do_shuffle = True, with_label = False):
         if self.is_epoch_end:
             if do_shuffle:
@@ -110,8 +110,9 @@ class Graph(object):
             self.links = new_links
             self.order = self.order.keys()
             self.N = new_N
-            print len(self.links)
+            print(len(self.links))
             return self
+
         elif method == "node":
             self.adj_matrix = np.zeros([self.N, self.N], np.int_)
             self.order = {}
@@ -129,9 +130,9 @@ class Graph(object):
             self.order = self.order.keys()
             self.N = new_N
             self.links = new_links
-            print len(self.links)
+            print(len(self.links))
             return self
-            pass
+
         elif method == "explore": 
             new_adj_matrix = np.zeros([self.N, self.N], np.int_)
             self.order = {}
@@ -154,7 +155,7 @@ class Graph(object):
             self.adj_matrix = new_adj_matrix
             self.N = new_N
             self.links = new_links
-            print len(self.links)
+            print(len(self.links))
             return self
-            pass
+
     
