@@ -12,22 +12,23 @@ Knowledge Discovery and Data Mining (KDD), 2016
 # !/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from config import Config
-from graph import Graph
-from model.sdne import SDNE
-from utils.utils import *
 import scipy.io as sio
 import time
 
 from optparse import OptionParser
 import os
 
+from config import Config
+from graph import Graph
+from model.sdne import SDNE
+from utils.utils import *
+
+
 if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("-c", dest="config_file", action="store", metavar="CONFIG FILE")
     options, _ = parser.parse_args()
-    if options.config_file == None:
+    if options.config_file is None:
         raise IOError("no config file specified")
 
     config = Config(options.config_file)

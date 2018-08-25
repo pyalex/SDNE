@@ -1,7 +1,11 @@
+import tqdm
 import scipy.io as sio
 import numpy as np
 from utils.utils import *
 import random
+import multiprocessing
+from functools import partial, reduce
+
 import copy
 from scipy.sparse import csr_matrix
 from scipy.sparse import dok_matrix
@@ -13,22 +17,23 @@ class Graph(object):
         self.st = 0
         self.is_epoch_end = False
         if suffix == "txt":
-            fin = open(file_path, "r")
-            firstLine = fin.readline().strip().split()
+            with open(file_path, "r") as f:
+                firstLine = f.readline().strip().split()
+                lines = f.readlines()
+
             self.N = int(firstLine[0])
             self.E = int(firstLine[1])
             self.__is_epoch_end = False
-            self.adj_matrix = dok_matrix((self.N, self.N), np.int_)
-            count = 0
-            for line in fin.readlines():
-                line = line.strip().split()
-                x = int(line[0])
-                y = int(line[1])
-                self.adj_matrix[x, y] += 1
-                self.adj_matrix[y, x] += 1
-                count += 1
-            fin.close()
-            self.adj_matrix = self.adj_matrix.tocsr()
+
+            adj_matrix = dok_matrix((self.N, self.N), dtype=np.uint8)
+
+            p = lambda l: l.strip().split()
+
+            adj_matrix._update(dict.fromkeys(((int(p(line)[0]), int(p(line)[1])) for line in lines), 1))
+            adj_matrix._update(dict.fromkeys(((int(p(line)[1]), int(p(line)[0])) for line in lines), 1))
+
+            sio.savemat(file_path[:-4] + '.mat', {"graph_sparse": adj_matrix})
+            exit("use mat file now")
         else:
             try:
                 self.adj_matrix = sio.loadmat(file_path)["graph_sparse"].tocsr()
