@@ -33,10 +33,10 @@ if __name__ == "__main__":
 
     config = Config(options.config_file)
 
-    train_graph_data = Graph(config.train_graph_file, config.ng_sample_ratio)
-
     if config.origin_graph_file:
-        origin_graph_data = Graph(config.origin_graph_file, config.ng_sample_ratio)
+        train_graph_data = origin_graph_data = Graph(config.origin_graph_file, config.ng_sample_ratio)
+    else:
+        train_graph_data = Graph(config.train_graph_file, config.ng_sample_ratio)
 
     if config.label_file:
         # load label for classification

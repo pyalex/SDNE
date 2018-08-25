@@ -57,5 +57,5 @@ class Config(object):
         self.dbn_batch_size = conf.getint("Model_Setup", "dbn_batch_size")
         self.dbn_learning_rate = conf.getfloat("Model_Setup", "dbn_learning_rate")
 
-        self.sparse_dot = False
+        self.sparse_dot = True
         self.ng_sample_ratio = conf.getfloat("Model_Setup", "ng_sample_ratio")
